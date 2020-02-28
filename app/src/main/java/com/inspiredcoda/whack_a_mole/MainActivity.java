@@ -3,6 +3,7 @@ package com.inspiredcoda.whack_a_mole;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,15 +27,18 @@ public class MainActivity extends AppCompatActivity {
     ImageView bug00, bug01, bug02, bug10, bug11, bug12, bug20, bug21, bug22, soundState, life1, life2, life3;
     FrameLayout frm00, frm01, frm02, frm10, frm11, frm12, frm20, frm21, frm22;
     TextView gameScore;
+    Button startBtn;
 
     ImageView [][] moles;
     ImageView [] lives;
 
-    Animation showMole, hideMole;
-    Random randomI, randomJ;
+    Animation showMole, hideMole, showLife;
+    Random randomI, randomJ, randomDurations;
 
+    int [] moleDurations;
     int score = 0;
     int currentLife = 2;
+    int row, col;
     boolean exitStatus = false;
     boolean playing = true;
     boolean isSounding = true;
@@ -46,26 +51,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initializeWidgets();
+        showLife = AnimationUtils.loadAnimation(this, R.anim.show_life);
         showMole = AnimationUtils.loadAnimation(this, R.anim.show_mole_animation);
         hideMole = AnimationUtils.loadAnimation(this, R.anim.hide_mole_animation);
         moles = new ImageView[3][3];
         lives = new ImageView[3];
-        life1.setAnimation(showMole);
-        life2.setAnimation(showMole);
-        life3.setAnimation(showMole);
+        moleDurations = new int[3];
+
+        moleDurations[0] = 1000;
+        moleDurations[1] = 2000;
+        moleDurations[2] = 3000;
+
+        loadLives();
+
         addAllImageViews(moles);
         randomI = new Random();
         randomJ = new Random();
+        randomDurations = new Random();
 
-        showMole.setAnimationListener(new Animation.AnimationListener() {
+
+        hideMole.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                isMoleHit = false;
+                moles[row][col].setEnabled(false);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-
+                moles[row][col].setEnabled(true);
             }
 
             @Override
@@ -74,7 +87,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        startGame();
+//        This button still has some issues
+        startBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!playing){
+                    startBtn.setText("Stop game");
+                    startGame(true);
+                    playing = true;
+                }else{
+                    startBtn.setText("Start game");
+                    playing = false;
+                    startGame(false);
+                }
+            }
+        });
+
+    }
+
+    private void loadLives() {
+        life1.setVisibility(View.VISIBLE);
+        life1.setAnimation(showLife);
+        life2.setVisibility(View.VISIBLE);
+        life2.setAnimation(showLife);
+        life3.setVisibility(View.VISIBLE);
+        life3.setAnimation(showLife);
     }
 
     private void initializeWidgets(){
@@ -98,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         frm21 = findViewById(R.id.frm21);
         frm22 = findViewById(R.id.frm22);
 
+        startBtn = findViewById(R.id.start_btn);
         gameScore = findViewById(R.id.game_score);
         soundState = findViewById(R.id.soundStatus);
         life1 = findViewById(R.id.life_1);
@@ -125,47 +163,56 @@ public class MainActivity extends AppCompatActivity {
     private void showDialog(){
         AlertDialog customDialog = new AlertDialog.Builder(this)
                 .setMessage("Game Over!!!")
+                .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        startGame(true);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        onBackPressed();
+                    }
+                })
                 .create();
         customDialog.show();
     }
 
-    private void nextMole(View view){
-        int i = randomI.nextInt(3) ;
-        int j = randomJ.nextInt(3) ;
 
-        view.setVisibility(View.GONE);
-        moles[i][j].setVisibility(View.VISIBLE);
-        moles[i][j].startAnimation(showMole);
-    }
+    private void startGame(boolean startOrStop){
+        if(startOrStop){
+            Log.d(TAG, "startGame: Game Started");
+            if (playing){
+                Log.d(TAG, "startGame: still playing...................");
+                row = randomI.nextInt(3) ;
+                col = randomJ.nextInt(3) ;
+                int DURATION = randomDurations.nextInt(3);
+                Log.d(TAG, "startGame: Row : Column = "+ row +" : "+col);
+                moles[row][col].setVisibility(View.VISIBLE);
+                moles[row][col].startAnimation(showMole);
 
-    private void startGame(){
-        Log.d(TAG, "startGame: Game Started");
-        if (playing){
-            Log.d(TAG, "startGame: still playing...................");
-            final int i = randomI.nextInt(3) ;
-            final int j = randomJ.nextInt(3) ;
-
-            moles[i][j].setVisibility(View.VISIBLE);
-            moles[i][j].startAnimation(showMole);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(TAG, "run: Visibility changed");
-                    moles[i][j].startAnimation(hideMole);
-                    moles[i][j].setVisibility(View.GONE);
-                    if (!isMoleHit){
-                        startGame();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "run: Visibility changed");
+                        moles[row][col].startAnimation(hideMole);
+                        moles[row][col].setVisibility(View.GONE);
+                        Log.d(TAG, "startGame: Row : Column = "+ row +" : "+col);
+                        if (!isMoleHit){
+                            Log.d(TAG, "run: no Mole killed... Calling another");
+                            startGame(true);
+                        }else{
+                            isMoleHit = false;
+                            startGame(true);
+                        }
                     }
-                }
-            }, 1500);
+                }, moleDurations[DURATION]);
 
-        }
+            }
+        }///END OF IF STATEMENT
 
 
     }
@@ -183,9 +230,9 @@ public class MainActivity extends AppCompatActivity {
                 lives[1].setVisibility(View.VISIBLE);
                 lives[2].setVisibility(View.VISIBLE);
 
-                lives[0].startAnimation(showMole);
-                lives[1].startAnimation(showMole);
-                lives[2].startAnimation(showMole);
+                lives[0].startAnimation(showLife);
+                lives[1].startAnimation(showLife);
+                lives[2].startAnimation(showLife);
                 currentLife = 2;
                 score = 0;
                 gameScore.setText(String.valueOf(score));
@@ -195,14 +242,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void moleClicked(View view){
-        Log.d(TAG, "moleClicked: Mole Clicked!!!!!!!!!!!!!!!!!!!!!!!");
-        score += 1;
-        isMoleHit = true;
-        String newScore = String.valueOf(score);
-        gameScore.setText(newScore);
+    private void nextMole(View view){
+//        int i = randomI.nextInt(3) ;
+//        int j = randomJ.nextInt(3) ;
+
+        view.setVisibility(View.GONE);
         view.startAnimation(hideMole);
-        nextMole(view);
+//        moles[i][j].setVisibility(View.VISIBLE);
+//        moles[i][j].startAnimation(showMole);
+//        isMoleHit = false;
+        Log.d(TAG, "nextMole: isMoleHit = true");
+        Log.d(TAG, "nextMole: Calling startGame()");
+//        startGame();
+    }
+
+    public void moleClicked(View view){
+        if(view.isEnabled()){
+            Log.d(TAG, "moleClicked: Mole Clicked!!!!!!!!!!!!!!!!!!!!!!!");
+            score += 1;
+            isMoleHit = true;
+            String newScore = String.valueOf(score);
+            gameScore.setText(newScore);
+            view.startAnimation(hideMole);
+            nextMole(view);
+        }
     }
 
     public void speakerMute(View view){
@@ -215,6 +278,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause: called... GAME STOPPED!!!!!!!!!!!!!!!!!!!!!");
+        if (playing){
+            playing = false;
+        }
+        startGame(false);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Log.d(TAG, "onResume: called... GAME RESUMED!!!!!!!!!!!!!!!!!!!");
+        playing = true;
+        startGame(true);
+    }
 
     @Override
     public void onBackPressed() {
@@ -222,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
             if(playing){
                 playing = false;
             }
-            playing = false;
+            startGame(false);
             super.onBackPressed();
             return;
         }
@@ -236,12 +316,6 @@ public class MainActivity extends AppCompatActivity {
         }, 2000);
     }
 
-    class myAsync extends AsyncTask<Void, Void, Void>{
-        @Override
-        protected Void doInBackground(Void... voids) {
 
-            return null;
-        }
-    }
 
 }

@@ -8,16 +8,19 @@
     android:background="#DDD">
 
     <TextView
+        android:id="@+id/game_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/game_title"
-        android:text="Whack a Mole"
-        android:textSize="40dp"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:textStyle="bold"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/amarante"
+        android:text="Whack a Mole"
         android:textColor="@color/colorBlack"
-        android:layout_alignParentTop="true"/>
+        android:textSize="40dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,10 +33,12 @@
         android:textColor="@color/colorBlack"
         android:textStyle="bold"/>
 
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/game_lives"
+        android:orientation="horizontal"
         android:layout_alignParentEnd="true"
         android:layout_margin="20dp"
         android:layout_below="@+id/game_title">
@@ -42,18 +47,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/life_1"
+            android:visibility="invisible"
             android:src="@drawable/ic_bug"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/life_2"
+            android:visibility="invisible"
             android:src="@drawable/ic_bug"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/life_3"
+            android:visibility="invisible"
             android:src="@drawable/ic_bug"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -89,6 +97,7 @@
         android:id="@+id/gridlayout"
         android:rowCount="3"
         android:columnCount="3"
+        android:background="#DD009933"
         android:layout_centerInParent="true"
         android:padding="20dp">
 
@@ -99,7 +108,7 @@
             android:id="@+id/frm00"
             android:layout_row="0"
             android:layout_column="0"
-            android:background="@drawable/hole_bg"
+            android:background="@drawable/whack_a_mole_hole"
             android:layout_margin="10dp"
             android:onClick="holeClicked">
 
@@ -109,7 +118,7 @@
                 android:id="@+id/mole_0_0"
                 android:visibility="gone"
                 android:src="@drawable/ic_bug"
-                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_gravity="top|center_horizontal"
                 android:onClick="moleClicked"/>
 
         </FrameLayout>
@@ -120,7 +129,7 @@
             android:id="@+id/frm01"
             android:layout_row="0"
             android:layout_column="1"
-            android:background="@drawable/hole_bg"
+            android:background="@drawable/whack_a_mole_hole"
             android:layout_margin="10dp"
             android:onClick="holeClicked">
 
@@ -130,7 +139,7 @@
                 android:id="@+id/mole_0_1"
                 android:visibility="gone"
                 android:src="@drawable/ic_bug"
-                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_gravity="top|center_horizontal"
                 android:onClick="moleClicked"/>
 
         </FrameLayout>
@@ -141,7 +150,7 @@
             android:id="@+id/frm02"
             android:layout_row="0"
             android:layout_column="2"
-            android:background="@drawable/hole_bg"
+            android:background="@drawable/whack_a_mole_hole"
             android:layout_margin="10dp"
             android:onClick="holeClicked">
 
@@ -151,7 +160,7 @@
                 android:id="@+id/mole_0_2"
                 android:visibility="gone"
                 android:src="@drawable/ic_bug"
-                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_gravity="top|center_horizontal"
                 android:onClick="moleClicked"/>
 
         </FrameLayout>
@@ -164,7 +173,7 @@
             android:id="@+id/frm10"
             android:layout_row="1"
             android:layout_column="0"
-            android:background="@drawable/hole_bg"
+            android:background="@drawable/whack_a_mole_hole"
             android:layout_margin="10dp"
             android:onClick="holeClicked">
 
@@ -174,7 +183,7 @@
                 android:id="@+id/mole_1_0"
                 android:visibility="gone"
                 android:src="@drawable/ic_bug"
-                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_gravity="top|center_horizontal"
                 android:onClick="moleClicked"/>
 
         </FrameLayout>
@@ -185,7 +194,7 @@
             android:id="@+id/frm11"
             android:layout_row="1"
             android:layout_column="1"
-            android:background="@drawable/hole_bg"
+            android:background="@drawable/whack_a_mole_hole"
             android:layout_margin="10dp"
             android:onClick="holeClicked">
 
@@ -195,7 +204,7 @@
                 android:id="@+id/mole_1_1"
                 android:visibility="gone"
                 android:src="@drawable/ic_bug"
-                android:layout_gravity="bottom|center_horizontal"
+                android:layout_gravity="top|center_horizontal"
                 android:onClick="moleClicked"/>
 
         </FrameLayout>
@@ -206,7 +215,7 @@
             android:id="@+id/frm12"
             android:layout_row="1"
             android:layout_column="2"
-            android:background="@drawable/hole_bg"
+            android:background="@drawable/whack_a_mole_hole"
             android:layout_margin="10dp"
             android:onClick="holeClicked">
 
@@ -216,7 +225,7 @@
                 android:id="@+id/mole_1_2"
                 android:visibility="gone"
                 android:src="@drawable/ic_bug"
-                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_gravity="top|center_horizontal"
                 android:onClick="moleClicked"/>
 
         </FrameLayout>
@@ -229,7 +238,7 @@
             android:id="@+id/frm20"
             android:layout_row="2"
             android:layout_column="0"
-            android:background="@drawable/hole_bg"
+            android:background="@drawable/whack_a_mole_hole"
             android:layout_margin="10dp"
             android:onClick="holeClicked">
 
@@ -239,7 +248,7 @@
                 android:id="@+id/mole_2_0"
                 android:visibility="gone"
                 android:src="@drawable/ic_bug"
-                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_gravity="top|center_horizontal"
                 android:onClick="moleClicked"/>
 
         </FrameLayout>
@@ -250,7 +259,7 @@
             android:id="@+id/frm21"
             android:layout_row="2"
             android:layout_column="1"
-            android:background="@drawable/hole_bg"
+            android:background="@drawable/whack_a_mole_hole"
             android:layout_margin="10dp"
             android:onClick="holeClicked">
 
@@ -260,7 +269,7 @@
                 android:id="@+id/mole_2_1"
                 android:visibility="gone"
                 android:src="@drawable/ic_bug"
-                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_gravity="top|center_horizontal"
                 android:onClick="moleClicked"/>
 
         </FrameLayout>
@@ -271,7 +280,7 @@
             android:id="@+id/frm22"
             android:layout_row="2"
             android:layout_column="2"
-            android:background="@drawable/hole_bg"
+            android:background="@drawable/whack_a_mole_hole"
             android:layout_margin="10dp"
             android:onClick="holeClicked">
 
@@ -281,12 +290,25 @@
                 android:id="@+id/mole_2_2"
                 android:src="@drawable/ic_bug"
                 android:visibility="gone"
-                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_gravity="top|center_horizontal"
                 android:onClick="moleClicked"/>
 
         </FrameLayout>
 
     </GridLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_btn"
+        android:text="Start"
+        android:layout_below="@+id/gridlayout"
+        android:padding="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/colorBlack"
+        android:background="@drawable/start_btn_bg"/>
+
 
     <ImageView
         android:layout_width="30dp"
